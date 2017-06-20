@@ -1,10 +1,11 @@
-from flask import Flask, request, redirect
+"""A basic webapp to encrypt given message with caesar cipher. Bare bones, no validation, meets
+requirements, no more no less."""
+
+from flask import Flask, request
 from caesar import rotate_string
-import cgi
-from time import sleep
 
 app = Flask(__name__)
-app.config['DEBUG'] = True 
+app.config['DEBUG'] = True
 
 form = """
 <!DOCTYPE html>
@@ -28,7 +29,7 @@ form = """
     </head>
     <body>
     <form  action="" method="POST">
-        <label>Rotate by(enter a whole number)
+        <label>Rotate by:
         <input type="text" name="rot" />
         </label>
         <textarea name="text">
@@ -45,22 +46,9 @@ def index():
 
 @app.route('/', methods=['POST'])
 def encrypt():
-    try:
-        rot = int(request.form['rot'])
-        text = cgi.escape(request.form['text'])
-        if rot and text:
-            return form.format(rotate_string(text, rot))
-    except ValueError:
-        return redirect('/error')
-        """ redirect to index with .format modifying tag of input to error message?"""
+    rot = int(request.form['rot'])
+    text = request.form['text']
+    if rot and text:
+        return form.format(rotate_string(text, rot))
 
-@app.route('/error', methods=['POST'])
-def error():
-    "<h1>a numeric rot value must be entered</h1>"
-    
-    #sleep(5)
-    #return redirect('/')
-    return form.format(label="Need to put numeric value for rot", tarea="")
-
-    
 app.run()
