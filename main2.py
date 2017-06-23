@@ -1,7 +1,5 @@
 from flask import Flask, request, redirect, render_template
 from caesar import rotate_string
-import cgi
-from time import sleep
 
 app = Flask(__name__)
 app.config['DEBUG'] = True 
@@ -16,14 +14,15 @@ def encrypt():
     try:
         rot = int(request.form['rot'])
         text = request.form['text']
+        
         if rot and text:
             return render_template('rot_form.html', message=rotate_string(text, rot))
+        elif rot == 0:
+            return render_template('rot_form.html', message=text)
+
     except ValueError:
         return render_template('rot_form.html', declarative="Enter a value", 
-                               message=request.form['text'])
+                              message=request.form['text'])
 
-@app.route('/error', methods=['POST'])
-def error():
-    return render_template('rot_form.html', declarative="Enter a value!")
-    
+
 app.run()
